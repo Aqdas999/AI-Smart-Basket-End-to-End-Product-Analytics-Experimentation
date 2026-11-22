@@ -1,0 +1,216 @@
+{
+  "design": {
+    "start": "2018-03-05",
+    "end_exclusive": "2018-05-21",
+    "weeks": 11,
+    "baseline": 0.028309557247394486,
+    "mde_abs": 0.008,
+    "alpha": 0.05,
+    "power": 0.8,
+    "n_required_per_arm": 7668,
+    "weeks_needed": 10
+  },
+  "aa_false_positive_rate": 0.056,
+  "customers": {
+    "control": 9063,
+    "treatment": 9170
+  },
+  "srm_p": 0.42811658358309423,
+  "funnel": {
+    "treatment orders": 9296,
+    "widget impressions": 9113,
+    "clicks": 480,
+    "recommended item added": 112
+  },
+  "ctr": 0.05267200702293427,
+  "add_rate_given_click": 0.23333333333333334,
+  "primary": {
+    "metric": "Multi-product order rate",
+    "control": 0.032476024411508285,
+    "treatment": 0.046256454388984514,
+    "abs_diff": 0.013780429977476229,
+    "rel_lift": 0.42432625997759016,
+    "ci_low": 0.0081637266579194,
+    "ci_high": 0.01939713329703306,
+    "p_value": 1.519007603096004e-06,
+    "boot_ci": [
+      0.008435389193555992,
+      0.019370525625837735
+    ],
+    "true_effect": 0.012147213855421685
+  },
+  "secondary": [
+    {
+      "metric": "AOV (R$)",
+      "control": 162.68855274629468,
+      "treatment": 168.5367631239243,
+      "abs_diff": 5.848210377629613,
+      "rel_lift": 0.03594727643038062,
+      "ci_low": -0.41072743419574653,
+      "ci_high": 12.107148189454971,
+      "p_value": 0.06704889224943113,
+      "p_holm": 0.11770266333017859,
+      "significant": "no"
+    },
+    {
+      "metric": "GMV per customer (R$)",
+      "control": 164.71699878627388,
+      "treatment": 170.85253544165758,
+      "abs_diff": 6.135536655383703,
+      "rel_lift": 0.03724895852033328,
+      "ci_low": -0.22947479943385307,
+      "ci_high": 12.500548110201258,
+      "p_value": 0.058851331665089296,
+      "p_holm": 0.11770266333017859,
+      "significant": "no"
+    },
+    {
+      "metric": "Items per order",
+      "control": 1.147340889276373,
+      "treatment": 1.167276247848537,
+      "abs_diff": 0.019935358572163997,
+      "rel_lift": 0.01737527073120981,
+      "ci_low": 0.0033394525007275355,
+      "ci_high": 0.03653126464360046,
+      "p_value": 0.01855509064026044,
+      "p_holm": 0.05566527192078133,
+      "significant": "no"
+    }
+  ],
+  "guardrails": [
+    {
+      "guardrail": "cancellation_rate",
+      "control": 0.001961639058413252,
+      "treatment": 0.0026893287435456113,
+      "difference": 0.0007276896851323594,
+      "95% CI": "[-0.0007, +0.0021]",
+      "harm margin": "+0.003",
+      "status": "PASS"
+    },
+    {
+      "guardrail": "review_score",
+      "control": 4.0438076416337285,
+      "treatment": 4.044641889695525,
+      "difference": 0.0008342480617962167,
+      "95% CI": "[-0.0393, +0.0410]",
+      "harm margin": "-0.050",
+      "status": "PASS"
+    },
+    {
+      "guardrail": "late_delivery_rate",
+      "control": 0.09966592427616926,
+      "treatment": 0.09632070291048873,
+      "difference": -0.003345221365680523,
+      "95% CI": "[-0.0120, +0.0054]",
+      "harm margin": "+0.010",
+      "status": "PASS"
+    }
+  ],
+  "segments": [
+    {
+      "metric": "New customers",
+      "control": 0.03133453561767358,
+      "treatment": 0.045055067304483255,
+      "abs_diff": 0.013720531686809673,
+      "rel_lift": 0.4378725076452353,
+      "ci_low": 0.008105136410197918,
+      "ci_high": 0.01933592696342143,
+      "p_value": 1.6767101044647079e-06,
+      "customers": 17861,
+      "p_holm": 6.7068404178588316e-06
+    },
+    {
+      "metric": "Returning customers",
+      "control": 0.06578947368421052,
+      "treatment": 0.08143322475570033,
+      "abs_diff": 0.01564375107148981,
+      "rel_lift": 0.23778501628664514,
+      "ci_low": -0.02672847016914503,
+      "ci_high": 0.05801597231212465,
+      "p_value": 0.4693019297320489,
+      "customers": 587,
+      "p_holm": 0.4693019297320489
+    },
+    {
+      "metric": "Home categories",
+      "control": 0.05227817745803357,
+      "treatment": 0.07389635316698656,
+      "abs_diff": 0.02161817570895299,
+      "rel_lift": 0.4135219848914402,
+      "ci_low": 0.006832156547556504,
+      "ci_high": 0.036404194870349474,
+      "p_value": 0.004162171878257818,
+      "customers": 4101,
+      "p_holm": 0.008324343756515636
+    },
+    {
+      "metric": "Other categories",
+      "control": 0.02665350444225074,
+      "treatment": 0.03826955074875208,
+      "abs_diff": 0.01161604630650134,
+      "rel_lift": 0.4358168484624391,
+      "ci_low": 0.005807174322654399,
+      "ci_high": 0.01742491829034828,
+      "p_value": 8.878619739064293e-05,
+      "customers": 14168,
+      "p_holm": 0.0002663585921719288
+    }
+  ],
+  "weekly": {
+    "2018-03-05": {
+      "control": 0.02383939774153074,
+      "treatment": 0.03210463733650416
+    },
+    "2018-03-12": {
+      "control": 0.02219482120838471,
+      "treatment": 0.038510911424903725
+    },
+    "2018-03-19": {
+      "control": 0.0468187274909964,
+      "treatment": 0.04323094425483504
+    },
+    "2018-03-26": {
+      "control": 0.027700831024930747,
+      "treatment": 0.05093833780160858
+    },
+    "2018-04-02": {
+      "control": 0.03209876543209877,
+      "treatment": 0.05012853470437018
+    },
+    "2018-04-09": {
+      "control": 0.036939313984168866,
+      "treatment": 0.0414572864321608
+    },
+    "2018-04-16": {
+      "control": 0.03579952267303103,
+      "treatment": 0.052948255114320095
+    },
+    "2018-04-23": {
+      "control": 0.043316831683168314,
+      "treatment": 0.055299539170506916
+    },
+    "2018-04-30": {
+      "control": 0.024581005586592177,
+      "treatment": 0.0505166475315729
+    },
+    "2018-05-07": {
+      "control": 0.03225806451612903,
+      "treatment": 0.04374364191251272
+    },
+    "2018-05-14": {
+      "control": 0.03179824561403509,
+      "treatment": 0.049783549783549784
+    }
+  },
+  "weeks_treatment_ahead": 10,
+  "added_revenue_per_treatment_order": 1.254524526678141,
+  "pre_treatment_aov_gap": 4.593685850951431,
+  "decision": "SHIP",
+  "simulation_params": {
+    "widget_load_rate": 0.98,
+    "p_click_relevant": 0.2,
+    "p_click_other": 0.05,
+    "p_add_given_click": 0.25,
+    "seed": 42
+  }
+}
