@@ -1,376 +1,139 @@
-# 🚀 AI Smart Basket: End-to-End Product Analytics & A/B Testing
+# Smart Basket: Product Analytics & A/B Testing Case Study
 
-### A Product Analytics Case Study Inspired by Modern Quick-Commerce Platforms
+**Can a "frequently bought together" module at checkout grow basket size on a marketplace where 97% of orders contain a single product?**
 
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
-![SQL](https://img.shields.io/badge/SQL-Analytics-orange?style=for-the-badge)
-![Power BI](https://img.shields.io/badge/PowerBI-Dashboard-F2C811?style=for-the-badge&logo=powerbi)
-![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-150458?style=for-the-badge&logo=pandas)
-![NumPy](https://img.shields.io/badge/NumPy-Numerical%20Computing-013243?style=for-the-badge&logo=numpy)
-![Statistics](https://img.shields.io/badge/A%2FB%20Testing-Statistics-success?style=for-the-badge)
+An end-to-end product analytics project on ~100k real orders from [Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), a Brazilian e-commerce marketplace. It covers data modelling in SQL and Python, product metrics, opportunity sizing, a recommender, a pre-registered A/B test with proper statistics, and a launch decision.
 
----
+![Python](https://img.shields.io/badge/Python-3.10+-blue) ![PostgreSQL](https://img.shields.io/badge/SQL-PostgreSQL-336791) ![pandas](https://img.shields.io/badge/pandas-SciPy-150458) ![tests](https://img.shields.io/badge/tests-15%20passing-success)
 
-## 📌 Project Overview
-
-Modern quick-commerce platforms process millions of customer transactions every day. While customer acquisition has become increasingly efficient, improving **repeat purchases**, **customer retention**, and **basket value** remains one of the biggest product challenges.
-
-This project presents an end-to-end **Product Analytics case study** centered around an AI-powered **Smart Basket** recommendation feature. The objective is to evaluate whether personalized basket recommendations can positively influence customer engagement, conversion, and revenue through structured analytics and experimentation.
-
-Unlike traditional analytics projects that focus only on dashboards, this repository demonstrates the complete product analytics lifecycle—from data modeling and KPI definition to experimentation, statistical validation, and executive recommendations.
+> **Honesty note.** The data, the problem and all baseline metrics are real. The A/B test is a **simulation on real orders**: Olist never shipped this feature, so treatment behaviour (clicks, adds) comes from documented assumptions. Because the true effect is known, the analysis is also checked for whether it *recovers* that effect. [Why and how →](docs/04_Experiment_Design_and_Assumptions.md#6-simulation-assumptions)
 
 ---
 
-# 🎯 Business Problem
+## TL;DR
 
-Quick-commerce platforms rely heavily on customer retention and repeat purchases to achieve long-term profitability. While users frequently purchase similar products every week, discovering and adding these items manually increases friction in the shopping journey.
+| | |
+|---|---|
+| **Problem** | Only **3.3%** of orders contain more than one product, and AOV has been flat at **~R$160** for 20 months while orders grew **185%**. |
+| **Evidence of demand** | **31%** of second orders are placed **the same day** as the first: customers come back for items they could have added to the first basket. Multi-product orders are worth **55% more**. |
+| **Solution** | Smart Basket v1: a category-affinity recommender (3 suggestions at checkout). Offline hit-rate@3 **36.7% vs 31.1%** for a popularity baseline. |
+| **Experiment** | 11 weeks, 18,233 customers, randomised by customer, delta-method variance, A/A-validated. |
+| **Result** | Multi-product order rate **3.25% → 4.63%** (+1.38 pp, +42%, 95% CI +0.82 to +1.94 pp). All guardrails pass. |
+| **Decision** | **Ship to 90% with a 10% holdout.** Revenue lift is real but tiny (~R$1.25 per order) and **not detectable** in this test; the apparent +3.6% AOV lift is mostly a pre-existing chance gap. |
 
-A personalized **AI Smart Basket** recommendation system has the potential to:
-
-- Reduce purchase friction
-- Increase repeat purchase rate
-- Improve Average Order Value (AOV)
-- Enhance customer experience
-- Increase customer lifetime value (CLV)
-
-However, before deploying such a feature to millions of users, Product Managers must answer an important question:
-
-> **"Will Smart Basket create measurable business value?"**
-
-This project answers that question using Product Analytics, experimentation, and data-driven decision making.
+![Primary result](images/06_primary_result.png)
 
 ---
 
-# 🎯 Project Objectives
+## What's in the project
 
-This project was designed to simulate the complete workflow of a Product Analytics team.
+| Step | Where | Highlights |
+|---|---|---|
+| **1. Data model** | [`sql/`](sql/) · [`notebooks/01_Data_Modeling.ipynb`](notebooks/01_Data_Modeling.ipynb) | PostgreSQL raw → analytics layers; 12 automated reconciliation checks; pandas twin matches SQL on every column for all 98,666 orders |
+| **2. Product metrics** | [`notebooks/02_Product_Metrics.ipynb`](notebooks/02_Product_Metrics.ipynb) | Growth, cohorts, Pareto, basket analysis, delivery vs satisfaction, recommender evaluation, opportunity sizing |
+| **3. Experiment** | [`notebooks/03_Smart_Basket_Experiment.ipynb`](notebooks/03_Smart_Basket_Experiment.ipynb) | Power analysis, 500 A/A tests, SRM & balance checks, delta method + cluster bootstrap, Holm correction, non-inferiority guardrails, novelty check, segments |
+| **4. Product docs** | [`docs/`](docs/) | [PRD](docs/01_Product_Requirements.md) · [Metric definitions](docs/02_Metrics_Definition.md) · [Metrics framework](docs/03_Product_Metrics_Framework.md) · [Experiment design](docs/04_Experiment_Design_and_Assumptions.md) · [Decision memo](docs/05_Decision_Memo.md) |
+| **5. Dashboard** | [`dashboard/smart_basket_dashboard.html`](dashboard/smart_basket_dashboard.html) | Self-contained interactive HTML (4 tabs, tooltips, light/dark). Download it and open it in a browser. |
 
-The major objectives include:
-
-- Build an analytics-ready data model from raw marketplace data.
-- Perform data quality assessment and validation.
-- Define business and product KPIs.
-- Analyze customer behavior and purchasing patterns.
-- Identify high-value customer segments.
-- Design a realistic Smart Basket product experiment.
-- Evaluate feature performance using A/B testing.
-- Validate experiment results using statistical hypothesis testing.
-- Build an executive Power BI dashboard for business stakeholders.
-- Deliver product recommendations backed by data.
-
----
-# 🏗️ Product Analytics Workflow
-
-This project follows an end-to-end Product Analytics lifecycle similar to the workflow used by analytics teams in modern technology companies.
-
-```text
-Business Problem
-        │
-        ▼
-Data Collection
-        │
-        ▼
-Data Quality Audit
-        │
-        ▼
-Analytics Data Modeling
-        │
-        ▼
-Feature Engineering
-        │
-        ▼
-Product KPI Definition
-        │
-        ▼
-Customer & Product Analytics
-        │
-        ▼
-Experiment Design
-        │
-        ▼
-A/B Testing
-        │
-        ▼
-Statistical Validation
-        │
-        ▼
-Business Recommendation
-        │
-        ▼
-Executive Dashboard
-```
+![Dashboard: experiment tab](images/dashboard_experiment.png)
 
 ---
 
-# 🏛️ Project Architecture
+## Key findings
 
-```text
-AI-Smart-Basket-Product-Analytics/
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── notebooks/
-│   ├── 01_Data_Modeling.ipynb
-│   ├── 02_Product_Analytics.ipynb
-│   └── 03_AB_Testing.ipynb
-│
-├── dashboard/
-│   └── Smart_Basket_Dashboard.pbix
-│
-├── sql/
-│
-├── docs/
-│
-├── images/
-│
-└── README.md
-```
+**1. Growth comes from volume, not basket size.** Orders grew 185% (H1 2018 vs H1 2017) while AOV stayed at ~R$160.
+
+![Growth](images/01_growth.png)
+
+**2. Baskets are tiny, and bigger baskets are worth a lot more.** 96.7% of orders contain a single product. Multi-product orders average R$244 vs R$157.
+
+![Baskets](images/02_basket.png)
+
+**3. Retention is the structural weakness.** Only **3.0%** of customers ever order twice, and monthly cohort retention stays below 1%. The top 10% of customers bring 38% of GMV.
+
+**4. Late delivery destroys satisfaction.** Late orders average **2.27★ vs 4.29★**, so any feature that could split shipments needs a delivery guardrail.
+
+![Late delivery](images/03_late_delivery.png)
+
+**5. Category affinity is real.** Bed/bath shoppers buy home-comfort items 34× more often than chance; toys ↔ baby and bed/bath ↔ furniture & décor are strong pairs.
 
 ---
 
-# ⚙️ Tech Stack
+## The experiment, done properly
 
-| Category | Technologies |
-|----------|--------------|
-| Programming | Python |
-| Data Processing | Pandas, NumPy |
-| Analytics | SQL |
-| Visualization | Power BI |
-| Experimentation | A/B Testing |
-| Statistics | Hypothesis Testing |
-| Version Control | Git & GitHub |
-| Development Environment | VS Code, Jupyter Notebook |
+| Check | Result |
+|---|---|
+| Sample size for +0.8 pp MDE (α 0.05, power 80%) | 7,668 customers per arm → 11 weeks |
+| A/A false-positive rate (500 runs) | 5.6% (expected 5%) |
+| Sample-ratio mismatch | p = 0.43 (9,063 vs 9,170) |
+| Control exposed to the feature | 0 impressions, 0 clicks |
+| Delta method vs cluster bootstrap CI | [+0.82, +1.94] vs [+0.84, +1.94] pp |
+| True simulated effect inside the CI | ✅ +1.21 pp |
+| Guardrails (cancellations, reviews, late delivery) | All PASS |
+| Weeks treatment ahead | 10 of 11, no novelty decay |
 
----
-# 📊 Dataset
+![Weekly lift](images/05_weekly_lift.png)
 
-This project uses the **Olist Brazilian E-Commerce Dataset**, one of the most widely used public datasets for marketplace analytics and product experimentation.
-
-The dataset contains transactional information across multiple business entities, including:
-
-- Customers
-- Orders
-- Order Items
-- Products
-- Sellers
-- Payments
-- Reviews
-- Geolocation
-- Product Category Translation
-
-During the analytics pipeline, these datasets were transformed into a unified **analytics-ready master dataset** to support business reporting and experimentation.
-
-> **Note:** The raw dataset is publicly available on Kaggle and has not been included in this repository to reduce repository size.
+**The most useful lesson:** the conversion metric moved clearly, but revenue didn't move detectably. Treatment baskets were already 2.8% bigger *before* the feature did anything (pure chance). Reporting the raw +3.6% AOV gap as a feature effect would have been wrong. Hence the holdout, and a v2 focused on *value per add* (same-seller, price-aware recommendations).
 
 ---
 
-# 📈 Product Metrics
-
-The following Product KPIs were developed and analyzed throughout the project.
-
-| Category | Metrics |
-|----------|---------|
-| Growth Metrics | Monthly Revenue, Order Growth, Customer Growth |
-| Customer Metrics | Repeat Purchase Rate, Customer Lifetime Value (CLV), Average Order Value |
-| Product Metrics | Category Revenue, Product Ratings, Product Performance |
-| Revenue Metrics | Total Revenue, Revenue per Customer, Revenue Lift |
-| Engagement Metrics | Repeat Customers, Purchase Frequency |
-| Experiment Metrics | CTR, Conversion Rate, Revenue Lift, Statistical Significance |
-
----
-
-# 🧪 Smart Basket Experiment
-
-A simulated **AI Smart Basket recommendation feature** was designed to evaluate the business impact of personalized shopping recommendations.
-
-The experiment follows a classic **A/B Testing** framework.
-
-### Control Group
-
-- Existing shopping experience
-- No Smart Basket recommendations
-
-### Treatment Group
-
-- AI Smart Basket recommendations enabled
-- Personalized product suggestions
-- Simplified repeat purchase experience
-
-The experiment evaluates whether introducing Smart Basket improves:
-
-- Click Through Rate (CTR)
-- Purchase Conversion Rate
-- Average Revenue per User
-- Repeat Purchase Behaviour
-
-Statistical hypothesis testing is then performed to determine whether the observed improvements are statistically significant.
-
----
-# 💡 Key Business Insights
-
-The analysis produced several business insights that can support product and growth decisions.
-
-### Customer Insights
-
-- A relatively small segment of customers contributes a significant share of overall revenue.
-- Repeat customers generate substantially higher lifetime value than one-time purchasers.
-- Customer ratings remain consistently high, indicating strong product satisfaction.
-
-### Product Insights
-
-- Revenue is concentrated within a limited number of product categories.
-- High-performing categories represent the best opportunity for recommendation optimization.
-- Product ratings and purchase volume show positive correlation across several categories.
-
-### Revenue Insights
-
-- Monthly revenue demonstrates strong growth over the observed period.
-- Average Order Value remains stable, providing a reliable baseline for experimentation.
-- Customer acquisition and repeat purchasing both contribute to overall business growth.
-
----
-
-# 🚀 Business Recommendations
-
-Based on the analysis and experimentation, the following recommendations are proposed:
-
-### Recommendation 1
-
-Roll out the Smart Basket feature initially to **high-value repeat customers**, as they are the most likely to engage with personalized recommendations.
-
-### Recommendation 2
-
-Continuously monitor:
-
-- Click Through Rate (CTR)
-- Conversion Rate
-- Average Order Value (AOV)
-- Revenue Lift
-- Repeat Purchase Rate
-
-after deployment.
-
-### Recommendation 3
-
-Conduct phased rollouts rather than a full-scale release to minimize business risk and validate experiment results across different customer segments.
-
-### Recommendation 4
-
-Expand personalization by incorporating customer purchase history and category preferences into future recommendation models.
-
----
-
-# 📊 Dashboard Preview
-
-The Power BI dashboard developed as part of this project provides an executive view of business performance through interactive visualizations.
-
-Dashboard pages include:
-
-- 📈 Executive Overview
-- 👥 Customer Analytics
-- 📦 Product Analytics
-- 🧪 Smart Basket Experiment
-- 📊 Business Recommendations
-
-> Dashboard screenshots will be added after final dashboard development.
-
----
-# 🔮 Future Enhancements
-
-The current implementation establishes a strong Product Analytics foundation. Future improvements may include:
-
-- 🤖 Machine Learning–based recommendation engine
-- 🧠 Personalized ranking using collaborative filtering
-- ⚡ Real-time event streaming and analytics
-- 🎯 Customer churn prediction
-- 🎁 Coupon and promotion personalization
-- 📱 Real-time feature monitoring dashboard
-- 📊 Advanced cohort and retention analysis
-
----
-
-# ▶️ How to Run
-
-### 1. Clone the Repository
+## How to run
 
 ```bash
 git clone https://github.com/Aqdas999/AI-Smart-Basket-End-to-End-Product-Analytics-Experimentation.git
-```
-
-### 2. Navigate to the Project
-
-```bash
 cd AI-Smart-Basket-End-to-End-Product-Analytics-Experimentation
+python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
+pip install -r requirements.txt && pip install -e .
+
+python scripts/download_data.py        # or download manually: see data/README.md
+python scripts/run_pipeline.py         # builds tables, runs all notebooks, builds dashboard
+pytest                                 # 15 tests, no data needed
 ```
 
-### 3. Install Dependencies
+**SQL version (PostgreSQL 13+):**
 
 ```bash
-pip install -r requirements.txt
+createdb olist
+psql -d olist -f sql/01_create_schema.sql
+psql -d olist -f sql/02_load_data.sql       # run from the repo root
+psql -d olist -f sql/03_analytics_model.sql
+psql -d olist -f sql/04_data_validation.sql # every check should say PASS
 ```
 
-### 4. Launch the Jupyter Notebooks
+You can also just read the notebooks on GitHub; they're committed with outputs.
 
-```bash
-jupyter notebook
-```
+---
 
-### 5. Open the Power BI Dashboard
-
-Open:
+## Repository structure
 
 ```text
-dashboard/Smart_Basket_Dashboard.pbix
+├── data/                  raw/ and processed/ (git-ignored) + README with download steps
+├── sql/                   01 schema · 02 load · 03 analytics model · 04 validation (PostgreSQL)
+├── notebooks/             01 data modeling · 02 product metrics · 03 A/B test (with outputs)
+├── src/smart_basket/      reusable code: data_model, recommender, simulation, experiment stats, plotting
+├── docs/                  PRD, metric definitions, metrics framework, experiment design, decision memo
+├── dashboard/             self-contained HTML dashboard
+├── reports/               metric & experiment outputs (JSON/CSV) used by the dashboard
+├── images/                figures used in this README
+├── scripts/               download_data · run_pipeline · build_dashboard
+├── tests/                 pytest suite for the data model and statistics
+├── requirements.txt · pyproject.toml · LICENSE
 ```
 
 ---
 
-# 📂 Repository Structure
+## Limitations
 
-```text
-AI-Smart-Basket-End-to-End-Product-Analytics-Experimentation/
+* **Simulated treatment.** The click and add rates are assumptions; a live test would measure them. Effects on checkout completion and real guardrail harm (split shipments) can't be simulated from this data.
+* **Category-level recommendations.** v1 recommends categories, not specific products. It's enough to test demand, not production quality.
+* **Historical data (2016–2018)** from one marketplace. Absolute numbers won't transfer to other platforms; the method does.
+* **No session or funnel data** in Olist, so the experiment can only measure order-level outcomes.
 
-├── dashboard/
-├── data/
-│   ├── raw/
-│   └── processed/
-├── docs/
-├── images/
-├── notebooks/
-├── sql/
-├── README.md
-├── requirements.txt
-└── LICENSE
-```
+## Skills demonstrated
+
+Product sense (problem framing, PRD, metric trees, decision memo) · SQL data modelling & validation (PostgreSQL, CTEs, window functions) · Python (pandas, NumPy, SciPy, matplotlib) · experiment design (power analysis, randomisation, pre-registration) · experiment analysis (delta method, bootstrap, SRM, A/A, multiple-testing correction, non-inferiority) · recommender evaluation · data visualisation & dashboarding · testing and reproducible project structure.
 
 ---
 
-# 🎓 Skills Demonstrated
-
-- Product Analytics
-- Business Analytics
-- Product Thinking
-- A/B Testing
-- Statistical Hypothesis Testing
-- SQL Analytics
-- Python (Pandas & NumPy)
-- Data Cleaning & Feature Engineering
-- Power BI Dashboard Development
-- Executive Reporting
-- Data Visualization
-- Git & GitHub
-
----
-
-# ⭐ Key Takeaways
-
-This project demonstrates how Product Analytics can be used to move beyond descriptive reporting and support data-driven product decisions.
-
-Rather than focusing solely on dashboards, the project follows a structured analytics workflow—from understanding the business problem and preparing analytics-ready data to designing experiments, validating results statistically, and communicating actionable recommendations.
-
-The end result is a complete Product Analytics case study that mirrors how modern product teams evaluate and launch new features.
-
----
-
+*Data: Olist Brazilian E-Commerce Public Dataset, CC BY-NC-SA 4.0. Code: MIT.*
